@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 11-Jun-2019 16:17:43
+% Last Modified by GUIDE v2.5 11-Jun-2019 16:34:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,6 +78,9 @@ function pushbutton_loadnewsubject_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_loadnewsubject (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+pnt_welcome
+
 [dir_path, subject_info] = gui_select_folder
 
 string = {
@@ -90,8 +93,16 @@ string = {
     };
 handles.text_subject_info.String = string;
 
+global inner_id
+inner_id = subject_info.inner_id;
+
+global subject_rawfile_path
+subject_rawfile_path = dir_path;
+
 global runtime_path
-[a, b, c] = mkdir(fullfile(runtime_path, 'subjects', subject_info.inner_id));
+global subject_id_path
+subject_id_path = fullfile(runtime_path, 'subjects', inner_id);
+[a, b, c] = mkdir(subject_id_path);
 
 
 % --- Executes on button press in pushbutton_preprocess.
@@ -99,3 +110,8 @@ function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_preprocess (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global subject_id_path
+subject_id_path
+
+fun_preprocess_1
+print('done')
