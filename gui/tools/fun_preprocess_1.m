@@ -36,8 +36,8 @@ spm_jobman('initcfg')
 spm_jobman('run', matlabbatch)
 
 % Save imported nii files
-save(fullfile(subject_id_path, '_____preprocessed_', 'filenames.mat'),...
-    get_all_file_path(fullfile(subject_id_path, '_____preprocessed_')))
+raw_nii_fnames = get_all_file_path(fullfile(subject_id_path, '_____preprocessed_'));
+save(fullfile(subject_id_path, '_____preprocessed_', 'filenames.mat'), 'raw_nii_fnames')
 
 % Stage preprocessed dir
 movefile(...
