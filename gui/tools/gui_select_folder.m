@@ -3,6 +3,9 @@ global runtime_path
 lastdirmat = fullfile(runtime_path, 'dotfiles', 'lastdir.mat');
 if exist(lastdirmat, 'file')
     load(lastdirmat, 'dir_path')
+end
+
+if exist(dir_path, 'dir')
     dir_path = uigetdir(dir_path);
 else
     dir_path = uigetdir(pwd);

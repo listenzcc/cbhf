@@ -41,7 +41,7 @@ save(fullfile(subject_id_path, '_____preprocessed_', 'filenames.mat'), 'raw_nii_
 
 % Stage preprocessed dir
 movefile(...
-    fullfile(new_pathname, '_____preprocessed_'),...
-    fullfile(new_pathname, '_____preprocessed_1'));
+    fullfile(subject_id_path, '_____preprocessed_'),...
+    fullfile(subject_id_path, '_____preprocessed_1'));
 
 end

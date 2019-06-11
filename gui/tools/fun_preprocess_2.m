@@ -1,28 +1,40 @@
-function fun_preprocess_2(appPath, pathname, hObject)
-[fname_map, pre_map, ext_map, path_map] = fun_parse_files_in_path(pathname);
+function fun_preprocess_2
+
+global subject_id_path
+global resources_path
+
+% Return if realign already done
 for j = 2 : 4
-    if isKey(path_map, sprintf('_____preprocessed_%d', j))
+    if exist(fullfile(subject_id_path, sprintf('_____preprocessed_%d', j)), 'dir')
         return
     end
 end
 
-workpath = fullfile(pathname, '_____preprocessed_1');
-load(fullfile(appPath, 'resources', 'b_realign.mat'), 'matlabbatch')
+% Make preprocess path
+this_preprocess_path = fullfile(subject_id_path, '_____preprocessed_1');
 
-load(fullfile(workpath, 'fun_filenames.mat'), 'fun_filenames')
+% Load filenames of raw nii file
+load(fullfile(this_preprocess_path, 'filenames.mat'), 'raw_nii_fnames')
 
-len = length(fun_filenames);
+% Load batch file of realign
+load(fullfile(resources_path, 'b_realign.mat'), 'matlabbatch')
+
+% Inject data
+len = length(raw_nii_fnames);
 data = {cell(len, 1)};
 for j = 1 : len
-    data{1}{j} = [fullfile(workpath, fun_filenames{j}), ',1'];
+    [filepath, name, ext] = fileparts(raw_nii_fnames{j});
+    data{1}{j} = fullfile(this_preprocess_path, sprintf('%s%s,1', name, ext));
 end
 matlabbatch{1}.spm.spatial.realign.estwrite.data = data;
 
+% Run batch
 spm_jobman('initcfg')
 spm_jobman('run', matlabbatch)
 
+% Stage preprocessed dir
 movefile(...
-    fullfile(pathname, '_____preprocessed_1'),...
-    fullfile(pathname, '_____preprocessed_2'));
+    fullfile(subject_id_path, '_____preprocessed_1'),...
+    fullfile(subject_id_path, '_____preprocessed_2'));
 
 end

@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 11-Jun-2019 16:34:35
+% Last Modified by GUIDE v2.5 11-Jun-2019 21:53:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -105,13 +105,61 @@ subject_id_path = fullfile(runtime_path, 'subjects', inner_id);
 [a, b, c] = mkdir(subject_id_path);
 
 
+function listbox_preprocess_info_add(handles, string)
+    handles.listbox_preprocess_info.String{...
+    length(handles.listbox_preprocess_info.String)+1, 1} =...
+    string;
+    pause(1)
+
+
 % --- Executes on button press in pushbutton_preprocess.
 function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_preprocess (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global subject_id_path
-subject_id_path
 
+handles.listbox_preprocess_info.Value = 1;
+handles.listbox_preprocess_info.String = {};
+listbox_preprocess_info_add(handles,...
+    sprintf('Working on: %s', subject_id_path));
+
+listbox_preprocess_info_add(handles, 'DICOM import ...');
 fun_preprocess_1
-print('done')
+listbox_preprocess_info_add(handles, 'DICOM import done');
+
+listbox_preprocess_info_add(handles, 'Realign ...');
+fun_preprocess_2
+listbox_preprocess_info_add(handles, 'Realign done');
+
+listbox_preprocess_info_add(handles, 'Normalize ...');
+fun_preprocess_3
+listbox_preprocess_info_add(handles, 'Normalize done');
+
+listbox_preprocess_info_add(handles, 'Smooth ...');
+fun_preprocess_4
+listbox_preprocess_info_add(handles, 'Smooth done');
+
+
+
+% --- Executes on selection change in listbox_preprocess_info.
+function listbox_preprocess_info_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox_preprocess_info (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox_preprocess_info contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox_preprocess_info
+
+
+% --- Executes during object creation, after setting all properties.
+function listbox_preprocess_info_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox_preprocess_info (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

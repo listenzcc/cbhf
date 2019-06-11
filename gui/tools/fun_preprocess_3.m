@@ -1,34 +1,50 @@
-function fun_preprocess_3(appPath, pathname, hObject)
-[fname_map, pre_map, ext_map, path_map] = fun_parse_files_in_path(pathname);
+function fun_preprocess_3
+
+global subject_id_path
+global resources_path
+
+% Return if normalize already done
 for j = 3 : 4
-    if isKey(path_map, sprintf('_____preprocessed_%d', j))
+    if exist(fullfile(subject_id_path, sprintf('_____preprocessed_%d', j)), 'dir')
         return
     end
 end
 
-workpath = fullfile(pathname, '_____preprocessed_2');
-load(fullfile(appPath, 'resources', 'b_normalise.mat'), 'matlabbatch')
+% Make preprocess path
+this_preprocess_path = fullfile(subject_id_path, '_____preprocessed_2');
 
+% Load filenames of raw nii file
+load(fullfile(this_preprocess_path, 'filenames.mat'), 'raw_nii_fnames')
+
+% Load batch file of normalize
+load(fullfile(resources_path, 'b_normalize.mat'), 'matlabbatch')
+
+% Inject data
+% 1. Inject template
 matlabbatch{1}.spm.spatial.normalise.estwrite.eoptions.tpm =...
-    {fullfile(appPath, 'resources', 'b_TPM.nii')};
+    {fullfile(resources_path, 'b_TPM.nii')};
 
-meanfile = dir(fullfile(workpath, 'mean*.nii'));
-vol = [fullfile(workpath, meanfile.name), ',1'];
+% 2. Inject mean image to write
+meanfile = dir(fullfile(this_preprocess_path, 'mean*.nii'));
+vol = [fullfile(meanfile.folder, meanfile.name), ',1'];
 matlabbatch{1}.spm.spatial.normalise.estwrite.subj.vol = {vol};
 
-load(fullfile(workpath, 'fun_filenames.mat'), 'fun_filenames')
-len = length(fun_filenames);
+% 3. Inject images to normalize
+len = length(raw_nii_fnames);
 resample = cell(len, 1);
 for j = 1 : len
-    resample{j} = [fullfile(workpath, fun_filenames{j}), ',1'];
+    [filepath, name, ext] = fileparts(raw_nii_fnames{j});
+    resample{j} = fullfile(this_preprocess_path, sprintf('%s%s,1', name, ext));
 end
 matlabbatch{1}.spm.spatial.normalise.estwrite.subj.resample = resample;
 
+% Run batch
 spm_jobman('initcfg')
 spm_jobman('run', matlabbatch)
 
+% Stage preprocessed dir
 movefile(...
-    fullfile(pathname, '_____preprocessed_2'),...
-    fullfile(pathname, '_____preprocessed_3'));
+    fullfile(subject_id_path, '_____preprocessed_2'),...
+    fullfile(subject_id_path, '_____preprocessed_3'));
 
 end
