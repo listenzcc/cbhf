@@ -16,8 +16,7 @@ paths = cell(len, 1);
 for j = 1 : len
     [filepath, name, ext] = fileparts(raw_nii_fnames{j});
     paths{j} = fullfile(...
-        sprintf('%s4', filepath),...
-        sprintf('sw%s%s', name, ext));
+        sprintf('%s4', filepath), sprintf('sw%s%s', name, ext));
 end
 
 % Read data
@@ -33,12 +32,14 @@ console_report(handles, 'Reading images done')
 % Set mm of hippocampal
 mm_hippo = [-24, -18, -18];
 
+% Calculate position of hippocampal
+position_hippo = fun_mm2position(mm_hippo, mat_4D);
+
 % Read hippocampal mask in mm
 mmgrid_hippo_mask = fun_get_mmgrid_ROI(...
     spm_vol(fullfile(resources_path, 'Hippocampus.nii')));
-
-% Calculate position of hippocampal
-position_hippo = fun_mm2position(mm_hippo, mat_4D);
+mmgrid_parietal_mask = fun_get_mmgrid_ROI(...
+    spm_vol(fullfile(resources_path, 'BA39_40.nii')));
 
 % Make position set of hippocampal based on mmgrid_hippo_mask
 set_hippo = containers.Map;
@@ -49,6 +50,16 @@ for k = keys(mmgrid_hippo_mask)
         continue
     end
     set_hippo(fun_arr2str(p)) = 1;
+end
+
+set_parietal = containers.Map;
+for k = keys(mmgrid_parietal_mask)
+    mm = fun_str2arr(k{1});
+    p = fun_mm2position(mm, mat_4D);
+    if ~fun_check_inside(p, imgsz)
+        continue
+    end
+    set_parietal(fun_arr2str(p)) = 1;
 end
 
 % Calculate time series
@@ -63,17 +74,30 @@ for j = 1 : length(ks)
     ts_hippo_ROI(:, j) = spm_detrend(squeeze(ts), 1);
 end
 
+ts_parietal_ROI = nan(size(img_4D, 4), length(set_parietal));
+ks = keys(set_parietal);
+for j = 1 : length(ks)
+    p = fun_str2arr(ks{j});
+    ts = img_4D(p(1), p(2), p(3), :);
+    ts_parietal_ROI(:, j) = spm_detrend(squeeze(ts), 1);
+end
+
 ts_global = mean(mean(mean(img_4D)));
 ts_global = spm_detrend(squeeze(ts_global), 1);
 
 % Remove global signal
 new_ts_hippo = fun_regout(ts_hippo, ts_global);
 new_ts_hippo_ROI = fun_regout(ts_hippo_ROI, ts_global);
+new_ts_parietal_ROI = fun_regout(ts_parietal_ROI, ts_global);
 
 % Band pass filter
 fs = 1000 / subject_info_.RepetitionTime; % Hz
+
 filtered_ts_hippo = bandpass(new_ts_hippo, [0.01, 0.1], fs);
+
 filtered_ts_hippo_ROI = bandpass(new_ts_hippo_ROI, [0.01, 0.1], fs);
+
+filtered_ts_parietal_ROI = bandpass(new_ts_parietal_ROI, [0.01, 0.1], fs);
 
 % Plot time series
 set(gcf, 'CurrentAxes', handles.axes_hippo_ts)
@@ -84,8 +108,21 @@ set(gca, 'YTick', [])
 set(gca, 'Box', 'off')
 
 f = gcf;
-figure, bandpass(new_ts_hippo, [0.01, 0.1], fs)
-figure, plot(filtered_ts_hippo_ROI)
+% figure, bandpass(new_ts_hippo, [0.01, 0.1], fs)
+% figure,
+% subplot(2, 1, 1), plot(filtered_ts_hippo_ROI), title('hippo')
+% subplot(2, 1, 2), plot(filtered_ts_parietal_ROI), title('parietal')
+c = corr(filtered_ts_hippo_ROI, filtered_ts_parietal_ROI);
+size(c)
+figure
+subplot(2, 2, 1), imagesc(c)
+cc = c;
+[x, y] = sort(max(c, [], 2), 'descend');
+cc = cc(y, :);
+[x, y] = sort(max(c, [], 1), 'descend');
+cc = cc(:, y);
+subplot(2, 2, 2), imagesc(cc)
+subplot(2, 2, 3), hist(c(:))
 figure(f);
 
 end
