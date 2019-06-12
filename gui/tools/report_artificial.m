@@ -21,8 +21,9 @@ set(gca, 'XTick', [])
 set(gca, 'Box', 'off')
 
 % Report console
+max_hm = max(abs(hm));
 console_report(handles, 'Max head motion is')
 console_report(handles,...
-    sprintf('\t%0.4f, %0.4f, %0.4f, %0.4f, %0.4f, %0.4f', max(hm)));
+    sprintf('\t%0.4f, %0.4f, %0.4f, %0.4f, %0.4f, %0.4f', max_hm));
 
 end
