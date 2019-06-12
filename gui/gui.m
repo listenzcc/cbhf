@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 11-Jun-2019 21:53:27
+% Last Modified by GUIDE v2.5 12-Jun-2019 16:05:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,9 +79,7 @@ function pushbutton_loadnewsubject_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-pnt_welcome
-
-[dir_path, subject_info] = gui_select_folder
+[dir_path, subject_info] = gui_select_folder;
 
 string = {
     sprintf('PatientName:       %s', subject_info.PatientName);
@@ -93,23 +91,24 @@ string = {
     };
 handles.text_subject_info.String = string;
 
-global inner_id
-inner_id = subject_info.inner_id;
+global subject_info_
+subject_info_ = subject_info;
+
+% global inner_id
+% inner_id = subject_info.inner_id;
 
 global subject_rawfile_path
 subject_rawfile_path = dir_path;
 
 global runtime_path
 global subject_id_path
-subject_id_path = fullfile(runtime_path, 'subjects', inner_id);
+subject_id_path = fullfile(runtime_path, 'subjects', subject_info.inner_id);
 [a, b, c] = mkdir(subject_id_path);
 
-
-function listbox_preprocess_info_add(handles, string)
-    handles.listbox_preprocess_info.String{...
-    length(handles.listbox_preprocess_info.String)+1, 1} =...
-    string;
-    pause(1)
+console_report(handles, '', 'clear')
+console_report(handles, repmat('#', 1, 80))
+console_report(handles, sprintf('    %s', datetime))
+console_report(handles, sprintf('New session: %s', subject_info.inner_id))
 
 
 % --- Executes on button press in pushbutton_preprocess.
@@ -119,42 +118,47 @@ function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global subject_id_path
 
-handles.listbox_preprocess_info.Value = 1;
-handles.listbox_preprocess_info.String = {};
-listbox_preprocess_info_add(handles,...
-    sprintf('Working on: %s', subject_id_path));
+console_report(handles, repmat('-', 1, 20))
+console_report(handles, 'Preprocessing ...')
+console_report(handles, sprintf('Working path: %s', subject_id_path));
 
-listbox_preprocess_info_add(handles, 'DICOM import ...');
+console_report(handles, 'DICOM import ...');
 fun_preprocess_1
-listbox_preprocess_info_add(handles, 'DICOM import done');
+console_report(handles, 'DICOM import done');
 
-listbox_preprocess_info_add(handles, 'Realign ...');
+console_report(handles, 'Realign ...');
 fun_preprocess_2
-listbox_preprocess_info_add(handles, 'Realign done');
+console_report(handles, 'Realign done');
 
-listbox_preprocess_info_add(handles, 'Normalize ...');
+console_report(handles, 'Normalize ...');
 fun_preprocess_3
-listbox_preprocess_info_add(handles, 'Normalize done');
+console_report(handles, 'Normalize done');
 
-listbox_preprocess_info_add(handles, 'Smooth ...');
+console_report(handles, 'Smooth ...');
 fun_preprocess_4
-listbox_preprocess_info_add(handles, 'Smooth done');
+console_report(handles, 'Smooth done');
+
+console_report(handles, 'Preprocess done');
+console_report(handles, repmat('-', 1, 20))
+
+report_artificial(handles)
+
+report_hippo_ts(handles)
 
 
-
-% --- Executes on selection change in listbox_preprocess_info.
-function listbox_preprocess_info_Callback(hObject, eventdata, handles)
-% hObject    handle to listbox_preprocess_info (see GCBO)
+% --- Executes on selection change in listbox_console_report.
+function listbox_console_report_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox_console_report (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns listbox_preprocess_info contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from listbox_preprocess_info
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox_console_report contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox_console_report
 
 
 % --- Executes during object creation, after setting all properties.
-function listbox_preprocess_info_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox_preprocess_info (see GCBO)
+function listbox_console_report_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox_console_report (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -163,3 +167,39 @@ function listbox_preprocess_info_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function axes_head_motion_123_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes_head_motion_123 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes_head_motion_123
+set(hObject, 'XTick', [])
+set(hObject, 'YTick', [])
+set(hObject, 'Box', 'off')
+
+
+% --- Executes during object creation, after setting all properties.
+function axes_head_motion_456_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes_head_motion_456 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes_head_motion_456
+set(hObject, 'XTick', [])
+set(hObject, 'YTick', [])
+set(hObject, 'Box', 'off')
+
+
+% --- Executes during object creation, after setting all properties.
+function axes_hippo_ts_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes_hippo_ts (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes_hippo_ts
+set(hObject, 'XTick', [])
+set(hObject, 'YTick', [])
+set(hObject, 'Box', 'off')

@@ -14,7 +14,6 @@ end
 fnames = dir(dir_path);
 fpath = fullfile(dir_path, fnames(3).name);
 subject_info = get_subject_info(fpath);
-subject_info.inner_id = md5(fpath);
 
 save(lastdirmat, 'dir_path')
 
