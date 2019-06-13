@@ -1,8 +1,5 @@
 function report_hippo_ts(handles)
 
-userdata = get(handles.pushbutton_data_holder, 'UserData');
-
-
 global subject_id_path
 global resources_path
 global subject_info_
@@ -28,7 +25,7 @@ vols = spm_vol(paths);
 mat_4D = vols{1}.mat;
 imgsz = vols{1}.dim;
 dvols = cell2mat(vols);
-dvols = dvols(11:end); % Remove first 10 TR to pervent artificial
+dvols = dvols(6:end); % Remove first 5 TR to pervent artificial
 img_4D = spm_read_vols(dvols);
 console_report(handles, 'Reading images done')
 

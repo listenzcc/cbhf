@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 12-Jun-2019 22:01:27
+% Last Modified by GUIDE v2.5 13-Jun-2019 15:20:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -143,6 +143,9 @@ console_report(handles, repmat('-', 1, 20))
 
 report_artificial(handles)
 
+load_data_for_analysis(handles)
+
+redraw_hippocampus(handles)
 
 % --- Executes on button press in pushbutton_analysis.
 function pushbutton_analysis_Callback(hObject, eventdata, handles)
@@ -212,7 +215,6 @@ set(hObject, 'YTick', [])
 set(hObject, 'Box', 'off')
 
 
-
 function edit_coor_x_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_coor_x (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -220,6 +222,7 @@ function edit_coor_x_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_coor_x as text
 %        str2double(get(hObject,'String')) returns contents of edit_coor_x as a double
+redraw_hippocampus(handles)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -243,6 +246,7 @@ function edit_coor_y_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_coor_y as text
 %        str2double(get(hObject,'String')) returns contents of edit_coor_y as a double
+redraw_hippocampus(handles)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -266,6 +270,7 @@ function edit_coor_z_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_coor_z as text
 %        str2double(get(hObject,'String')) returns contents of edit_coor_z as a double
+redraw_hippocampus(handles)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -302,3 +307,87 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton_data_holder.
+function pushbutton_data_holder_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_data_holder (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+hObject.UserData
+
+
+% --- Executes on button press in radiobutton_head_motion.
+function radiobutton_head_motion_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_head_motion (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_head_motion
+redraw_hippocampus(handles)
+
+
+% --- Executes on button press in radiobutton_global.
+function radiobutton_global_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_global (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_global
+redraw_hippocampus(handles)
+
+
+function edit_bandpass_low_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_bandpass_low (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_bandpass_low as text
+%        str2double(get(hObject,'String')) returns contents of edit_bandpass_low as a double
+redraw_hippocampus(handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_bandpass_low_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_bandpass_low (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_bandpass_high_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_bandpass_high (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_bandpass_high as text
+%        str2double(get(hObject,'String')) returns contents of edit_bandpass_high as a double
+redraw_hippocampus(handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_bandpass_high_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_bandpass_high (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over text7.
+function text7_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to text7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+disp('hi')
