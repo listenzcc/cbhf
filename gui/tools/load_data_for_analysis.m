@@ -19,8 +19,15 @@ gvar.mmgrid_parietal_mask = mmgrid_parietal_mask;
 console_report(handles, 'Reading T1 img ...')
 vol = spm_vol(fullfile(gvar.resources_path, 'canonical', 'single_subj_T1.nii'));
 gvar.vol_T1 = vol.mat;
-gvar.img_T1 = spm_read_vols(vol);
+img_T1 = spm_read_vols(vol);
+gvar.img_T1 = nan(max(size(img_T1)), max(size(img_T1)), max(size(img_T1)));
+gvar.img_T1(1:size(img_T1, 1), 1:size(img_T1, 2), 1:size(img_T1, 3)) = img_T1;
+gvar.img_T1 = img_T1;
 console_report(handles, 'Reading T1 img done')
+
+% Read colormap
+load(fullfile(gvar.resources_path, 'cm.mat'), 'cm')
+gvar.colormap = cm;
 
 %% Loading img_4D
 % Make preprocessed path
