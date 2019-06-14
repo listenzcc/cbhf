@@ -1,6 +1,7 @@
 function [dir_path, subject_info] = gui_select_folder
-global runtime_path
-lastdirmat = fullfile(runtime_path, 'dotfiles', 'lastdir.mat');
+global gvar
+
+lastdirmat = fullfile(gvar.runtime_path, 'dotfiles', 'lastdir.mat');
 if exist(lastdirmat, 'file')
     load(lastdirmat, 'dir_path')
 end

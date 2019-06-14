@@ -91,19 +91,16 @@ string = {
     };
 handles.text_subject_info.String = string;
 
-global subject_info_
-subject_info_ = subject_info;
+global gvar
+gvar.subject_info_ = subject_info;
 
 % global inner_id
 % inner_id = subject_info.inner_id;
 
-global subject_rawfile_path
-subject_rawfile_path = dir_path;
+gvar.subject_rawfile_path = dir_path;
 
-global runtime_path
-global subject_id_path
-subject_id_path = fullfile(runtime_path, 'subjects', subject_info.inner_id);
-[a, b, c] = mkdir(subject_id_path);
+gvar.subject_id_path = fullfile(gvar.runtime_path, 'subjects', subject_info.inner_id);
+[a, b, c] = mkdir(gvar.subject_id_path);
 
 console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
@@ -116,11 +113,11 @@ function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_preprocess (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global subject_id_path
+global gvar
 
 console_report(handles, repmat('-', 1, 20))
 console_report(handles, 'Preprocessing ...')
-console_report(handles, sprintf('Working path: %s', subject_id_path));
+console_report(handles, sprintf('Working path: %s', gvar.subject_id_path));
 
 console_report(handles, 'DICOM import ...');
 fun_preprocess_1
@@ -153,7 +150,7 @@ function pushbutton_analysis_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-report_hippo_ts(handles)
+plot_hippo(handles)
 
 
 % --- Executes on selection change in listbox_console_report.
@@ -314,7 +311,8 @@ function pushbutton_data_holder_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_data_holder (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-hObject.UserData
+global gvar
+gvar
 
 
 % --- Executes on button press in radiobutton_head_motion.
@@ -390,4 +388,8 @@ function text7_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to text7 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp('hi')
+global gvar
+fs = 1000 / gvar.subject_info_.RepetitionTime;
+f = gcf;
+figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
+figure(f);

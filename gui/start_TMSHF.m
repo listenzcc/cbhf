@@ -1,13 +1,13 @@
 clear all
 
-global runtime_path
-global resources_path
+global gvar
+gvar = struct;
 
-runtime_path = fullfile(fileparts(which('start_TMSHF')))
-resources_path = fullfile(runtime_path, 'resources')
+gvar.runtime_path = fullfile(fileparts(which('start_TMSHF')))
+gvar.resources_path = fullfile(gvar.runtime_path, 'resources')
 
-addpath(runtime_path)
-addpath(fullfile(runtime_path, 'tools'))
+addpath(gvar.runtime_path)
+addpath(fullfile(gvar.runtime_path, 'tools'))
 
 clear
 % clc

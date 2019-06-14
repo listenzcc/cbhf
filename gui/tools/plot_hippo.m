@@ -1,8 +1,63 @@
-function report_hippo_ts(handles)
+function plot_hippo(handles)
 
-userdata = get(handles.pushbutton_data_holder, 'UserData');
+global gvar
 
+%% T1 image
+% Calculate position of hippocampal
+position_hippo_T1 = fun_mm2position(gvar.hippo_mm, gvar.vol_T1);
 
+% Draw T1 image
+set(gcf, 'CurrentAxes', handles.axes_hippo_x)
+imshow(squeeze(gvar.img_T1(position_hippo_T1(1), :, :)))
+
+set(gcf, 'CurrentAxes', handles.axes_hippo_y)
+imshow(squeeze(gvar.img_T1(:, position_hippo_T1(2), :)))
+
+set(gcf, 'CurrentAxes', handles.axes_hippo_z)
+imshow(squeeze(gvar.img_T1(:, :, position_hippo_T1(3))))
+
+%% Function image
+% Calculate position of hippocampal
+position_hippo_fun = fun_mm2position(gvar.hippo_mm, gvar.vol_4D.mat);
+
+% Calculate time series
+ts_hippo = gvar.img_4D(position_hippo_fun(1), position_hippo_fun(2), position_hippo_fun(3), :);
+ts_hippo = spm_detrend(squeeze(ts_hippo), 1);
+raw_ts_hippo = ts_hippo;
+
+% Remove head motion
+if gvar.remove_head_motion == 1
+    hm = gvar.head_motion;
+    for s = hm
+        ts_hippo = fun_regout(ts_hippo, s);
+    end
+end
+
+% Remove global
+if gvar.remove_head_motion == 1
+    ts_global = mean(mean(mean(gvar.img_4D)));
+    ts_global = spm_detrend(squeeze(ts_global), 1);
+    ts_hippo = fun_regout(ts_hippo, ts_global);
+end
+
+% Band pass filter
+fs = 1000 / gvar.subject_info_.RepetitionTime;
+gvar.ts_hippo_before_bp = ts_hippo;
+ts_hippo = bandpass(ts_hippo, gvar.bandpass_filter, fs);
+
+gvar.ts_hippo = ts_hippo;
+
+% Plot time series
+set(gcf, 'CurrentAxes', handles.axes_hippo_ts)
+lines = plot([ts_hippo, raw_ts_hippo]);
+legend(lines, {'Process', 'Raw'}, 'Location', 'best')
+set(gca, 'XTick', [])
+set(gca, 'YTick', [])
+set(gca, 'Box', 'off')
+
+end
+
+function useless()
 global subject_id_path
 global resources_path
 global subject_info_

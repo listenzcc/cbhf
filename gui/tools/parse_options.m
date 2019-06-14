@@ -1,5 +1,5 @@
 function parse_options(handles)
-userdata = get(handles.pushbutton_data_holder, 'UserData');
+global gvar
 
 %% parse band filter
 % str2double
@@ -28,21 +28,19 @@ if bandpass_low >= bandpass_high
 end
 
 % save data
-userdata.bandpass_filter = [bandpass_low, bandpass_high];
+gvar.bandpass_filter = [bandpass_low, bandpass_high];
 
 console_report(handles,...
-    sprintf('Filter %.4f ~ %.4f', userdata.bandpass_filter))
+    sprintf('Filter %.4f ~ %.4f', gvar.bandpass_filter))
 
 %% parse head motion removal option
-userdata.remove_head_motion = handles.radiobutton_head_motion.Value;
+gvar.remove_head_motion = handles.radiobutton_head_motion.Value;
 console_report(handles,...
-    sprintf('Remove head motion: %d', userdata.remove_head_motion))
+    sprintf('Remove head motion: %d', gvar.remove_head_motion))
 
 %% parse global removal option
-userdata.remove_global = handles.radiobutton_global.Value;
+gvar.remove_global = handles.radiobutton_global.Value;
 console_report(handles,...
-    sprintf('Remove global: %d', userdata.remove_global))
-
-set(handles.pushbutton_data_holder, 'UserData', userdata)
+    sprintf('Remove global: %d', gvar.remove_global))
 
 end

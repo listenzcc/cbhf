@@ -15,5 +15,5 @@ handles.listbox_console_report.String{...
 handles.listbox_console_report.Value =...
     length(handles.listbox_console_report.String);
 
-pause(0.2)
+pause(0.1)
 end
