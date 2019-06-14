@@ -1,4 +1,4 @@
-function report_hippo_ts(handles)
+function report_hippo_ts_saved(handles)
 
 global subject_id_path
 global resources_path

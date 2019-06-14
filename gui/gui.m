@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 14-Jun-2019 15:18:02
+% Last Modified by GUIDE v2.5 14-Jun-2019 16:07:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -144,14 +144,13 @@ load_data_for_analysis(handles)
 
 redraw_hippocampus(handles)
 
-% --- Executes on button press in pushbutton_analysis.
-function pushbutton_analysis_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_analysis (see GCBO)
+% --- Executes on button press in pushbutton_redraw_hippo.
+function pushbutton_redraw_hippo_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_redraw_hippo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-plot_hippo(handles)
-
+redraw_hippocampus(handles)
 
 % --- Executes on selection change in listbox_console_report.
 function listbox_console_report_Callback(hObject, eventdata, handles)
@@ -393,3 +392,11 @@ fs = 1000 / gvar.subject_info_.RepetitionTime;
 f = gcf;
 figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
 figure(f);
+
+
+% --- Executes on button press in pushbutton_analysis_fc.
+function pushbutton_analysis_fc_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_analysis_fc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+redraw_parietal(handles)
