@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 14-Jun-2019 16:07:51
+% Last Modified by GUIDE v2.5 19-Jun-2019 15:02:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,6 +79,10 @@ function pushbutton_loadnewsubject_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+reset_preprocess(handles)
+reset_hippocampus(handles)
+reset_parietal(handles)
+
 [dir_path, subject_info] = gui_select_folder;
 
 string = {
@@ -107,14 +111,19 @@ console_report(handles, repmat('#', 1, 80))
 console_report(handles, sprintf('    %s', datetime))
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
 
+set(handles.pushbutton_preprocess, 'Enable', 'on')
+
 
 % --- Executes on button press in pushbutton_preprocess.
 function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_preprocess (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global gvar
 
+reset_hippocampus(handles)
+reset_parietal(handles)
+
+global gvar
 console_report(handles, repmat('-', 1, 20))
 console_report(handles, 'Preprocessing ...')
 console_report(handles, sprintf('Working path: %s', gvar.subject_id_path));
@@ -142,15 +151,19 @@ report_artificial(handles)
 
 load_data_for_analysis(handles)
 
-redraw_hippocampus(handles)
+set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+
 
 % --- Executes on button press in pushbutton_redraw_hippo.
 function pushbutton_redraw_hippo_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_redraw_hippo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+reset_hippocampus(handles)
+reset_parietal(handles)
 
 redraw_hippocampus(handles)
+
 
 % --- Executes on selection change in listbox_console_report.
 function listbox_console_report_Callback(hObject, eventdata, handles)
@@ -387,11 +400,14 @@ function text7_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to text7 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global gvar
-fs = 1000 / gvar.subject_info_.RepetitionTime;
-f = gcf;
-figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
-figure(f);
+
+if strcmp(get(handles.edit_bandpass_low, 'Enable'), 'on')
+    global gvar
+    fs = 1000 / gvar.subject_info_.RepetitionTime;
+    f = gcf;
+    figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
+    figure(f);
+end
 
 
 % --- Executes on button press in pushbutton_analysis_fc.
@@ -399,4 +415,5 @@ function pushbutton_analysis_fc_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_analysis_fc (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+reset_parietal(handles)
 redraw_parietal(handles)
