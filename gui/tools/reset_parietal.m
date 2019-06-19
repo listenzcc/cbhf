@@ -8,6 +8,7 @@ if clrgca
     cleargca(handles.axes_parietal_x)
     cleargca(handles.axes_parietal_y)
     cleargca(handles.axes_parietal_z)
+    cleargca(handles.axes_parietal_hist)
     cleargca(handles.axes_parietal_ts)
 end
 

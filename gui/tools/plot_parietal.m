@@ -19,6 +19,36 @@ img_T1(~isnan(gvar.corr_map_parietal_T1)) =...
 %     img_T1(p(1), p(2), p(3)) = 200;
 % end
 
+sz = size(gvar.corr_map_parietal_T1);
+idx = find(~isnan(gvar.corr_map_parietal_T1));
+len = length(idx);
+[p1, p2, p3] = ind2sub(sz, idx);
+
+cp_box = nan(length(idx), 4);
+for j = 1 : len
+    cp_box(j, 1) = gvar.corr_map_parietal_T1(p1(j), p2(j), p3(j));
+    cp_box(j, 2:4) = fun_position2mm([p1(j), p2(j), p3(j)], gvar.vol_T1.mat);
+end
+[a, b] = sort(cp_box(:, 1), 'descend');
+cp_box = cp_box(b, :);
+
+string = cell(len, 1);
+for j = 1 : len
+    string{j} = sprintf('%.4f, %d, %d, %d', cp_box(j, :));
+end
+set(handles.popupmenu_selector, 'String', string)
+
+set(gcf, 'CurrentAxes', handles.axes_parietal_hist)
+bar(cp_box(:, 1))
+hold on
+x = 1;
+plot(x, cp_box(x, 1), 'ro')
+hold off
+xlim([-0.05*len, 1.05*len])
+set(gca, 'XTick', [])
+set(gca, 'YTick', [])
+set(gca, 'Box', 'off')
+
 % Draw T1 image
 draw_TMP(img_T1, position_parietal_T1, gvar.colormap,...
     handles.axes_parietal_x, handles.axes_parietal_y, handles.axes_parietal_z)
