@@ -16,6 +16,12 @@ set(handles.text_coor_x, 'String', '--')
 set(handles.text_coor_y, 'String', '--')
 set(handles.text_coor_z, 'String', '--')
 
+set(handles.popupmenu_selector, 'Enable', 'off')
+set(handles.popupmenu_selector, 'Value', 1)
+set(handles.popupmenu_selector, 'String', {'0.xxxx, xx, xx, xx'})
+
+set(handles.pushbutton_emperical, 'Enable', 'off')
+
 end
 
 function cleargca(axes)

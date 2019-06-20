@@ -1,6 +1,8 @@
 function redraw_parietal(handles)
 
 set(handles.pushbutton_analysis_fc, 'Enable', 'off')
+set(handles.popupmenu_selector, 'Enable', 'off')
+set(handles.pushbutton_emperical, 'Enable', 'off')
 
 console_report(handles, repmat('-', 1, 20))
 console_report(handles, 'Redraw parietal ...')
@@ -12,5 +14,7 @@ plot_parietal(handles)
 console_report(handles, 'Redraw parietal done')
 
 set(handles.pushbutton_analysis_fc, 'Enable', 'on')
+set(handles.popupmenu_selector, 'Enable', 'on')
+set(handles.pushbutton_emperical, 'Enable', 'on')
 
 end

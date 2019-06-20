@@ -1,10 +1,17 @@
-function plot_parietal(handles)
+function plot_parietal(handles, parietal_mm, parietal_order)
 
 global gvar
 
+if nargin < 2 || isempty(parietal_mm)
+    is_redraw = false;
+    parietal_mm = gvar.parietal_mm;
+else
+    is_redraw = true;
+end
+
 %% T1 image
 % Calculate position of parietal
-position_parietal_T1 = fun_mm2position(gvar.parietal_mm, gvar.vol_T1.mat);
+position_parietal_T1 = fun_mm2position(parietal_mm, gvar.vol_T1.mat);
 
 img_T1 = uint8(gvar.img_T1*128);
 img_T1(~isnan(gvar.corr_map_parietal_T1)) =...
@@ -19,43 +26,72 @@ img_T1(~isnan(gvar.corr_map_parietal_T1)) =...
 %     img_T1(p(1), p(2), p(3)) = 200;
 % end
 
-sz = size(gvar.corr_map_parietal_T1);
-idx = find(~isnan(gvar.corr_map_parietal_T1));
-len = length(idx);
-[p1, p2, p3] = ind2sub(sz, idx);
-
-cp_box = nan(length(idx), 4);
-for j = 1 : len
-    cp_box(j, 1) = gvar.corr_map_parietal_T1(p1(j), p2(j), p3(j));
-    cp_box(j, 2:4) = fun_position2mm([p1(j), p2(j), p3(j)], gvar.vol_T1.mat);
-end
-[a, b] = sort(cp_box(:, 1), 'descend');
-cp_box = cp_box(b, :);
-
-string = cell(len, 1);
-for j = 1 : len
-    string{j} = sprintf('%.4f, %d, %d, %d', cp_box(j, :));
-end
-set(handles.popupmenu_selector, 'String', string)
-
-set(gcf, 'CurrentAxes', handles.axes_parietal_hist)
-bar(cp_box(:, 1))
-hold on
-x = 1;
-plot(x, cp_box(x, 1), 'ro')
-hold off
-xlim([-0.05*len, 1.05*len])
-set(gca, 'XTick', [])
-set(gca, 'YTick', [])
-set(gca, 'Box', 'off')
-
 % Draw T1 image
 draw_TMP(img_T1, position_parietal_T1, gvar.colormap,...
     handles.axes_parietal_x, handles.axes_parietal_y, handles.axes_parietal_z)
 
+%% Inject popupmenu_selector
+if is_redraw
+    ud = get(handles.axes_parietal_hist, 'Userdata');
+    set(ud.red_circle, 'XData', parietal_order)
+    set(ud.red_circle, 'YData', ud.cp_box(parietal_order, 1))
+else
+    sz = size(gvar.corr_map_parietal_T1);
+    idx = find(~isnan(gvar.corr_map_parietal_T1));
+    len = length(idx);
+    [p1, p2, p3] = ind2sub(sz, idx);
+    
+    corr_map_img_4D = zeros(gvar.vol_4D.dim);
+    for j = 1 : len
+        c = gvar.corr_map_parietal_T1(p1(j), p2(j), p3(j));
+        mm = fun_position2mm([p1(j), p2(j), p3(j)], gvar.vol_T1.mat);
+        pp = fun_mm2position(mm, gvar.vol_4D.mat);
+        if corr_map_img_4D(pp(1), pp(2), pp(3)) < c
+            corr_map_img_4D(pp(1), pp(2), pp(3)) = c;
+        end
+    end
+    
+    sz = size(corr_map_img_4D);
+    idx = find(0 ~= corr_map_img_4D);
+    len = length(idx);
+    [p1, p2, p3] = ind2sub(sz, idx);
+    
+    cp_box = nan(length(idx)+1, 4); % cp_box: a matrix storage corr and point
+    for j = 1 : len
+        cp_box(j, 1) = corr_map_img_4D(p1(j), p2(j), p3(j));
+        cp_box(j, 2:4) = fun_position2mm([p1(j), p2(j), p3(j)], gvar.vol_4D.mat);
+    end
+    cp_box(len+1, 1) = gvar.corr_empirical;
+    cp_box(len+1, 2:4) = gvar.parietal_mm_emperical;
+    
+    [a, b] = sort(cp_box(:, 1), 'descend');
+    cp_box = cp_box(b, :);
+    
+    string = cell(len, 1);
+    for j = 1 : len
+        string{j} = sprintf('%.4f, %d, %d, %d', cp_box(j, :));
+    end
+    set(handles.popupmenu_selector, 'String', string)
+    
+    set(gcf, 'CurrentAxes', handles.axes_parietal_hist)
+    bar(cp_box(:, 1))
+    hold on
+    x = 1;
+    red_circle = plot(x, cp_box(x, 1), 'ro');
+    hold off
+    xlim([-0.05*len, 1.05*len])
+    set(gca, 'XTick', [])
+    set(gca, 'YTick', [])
+    set(gca, 'Box', 'off')
+    ud = struct;
+    ud.red_circle = red_circle;
+    ud.cp_box = cp_box;
+    set(gca, 'Userdata', ud)
+end
+
 %% Function image
 % Calculate position of parietal peak
-position_parietal_fun = fun_mm2position(gvar.parietal_mm, gvar.vol_4D.mat);
+position_parietal_fun = fun_mm2position(parietal_mm, gvar.vol_4D.mat);
 
 % Calculate time series
 ts_parietal = gvar.img_4D(position_parietal_fun(1), position_parietal_fun(2), position_parietal_fun(3), :);

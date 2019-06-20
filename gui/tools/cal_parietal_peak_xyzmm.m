@@ -13,6 +13,15 @@ ts_global = spm_detrend(squeeze(ts_global), 1);
 
 corr_map_parietal_T1 = nan(gvar.vol_T1.dim);
 
+% Calculate empirical
+gvar.parietal_mm_emperical = [xmm, ymm, zmm];
+pp = fun_mm2position(gvar.parietal_mm_emperical, gvar.vol_4D.mat);
+ts_empirical = squeeze(gvar.img_4D(pp(1), pp(2), pp(3), :));
+
+[detrend_ts, befor_bandpass_ts, final_ts] = process_ts(ts_empirical, ts_hm, ts_global);
+gvar.corr_empirical = abs(fun_corr(final_ts, gvar.ts_hippo));
+
+
 %% Calculate FC
 ts_mat = [];
 p_fun_mat = [];

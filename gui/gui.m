@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 19-Jun-2019 16:22:53
+% Last Modified by GUIDE v2.5 20-Jun-2019 16:36:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -114,6 +114,8 @@ console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
 console_report(handles, sprintf('    %s', datetime))
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
+
+save(fullfile(gvar.subject_id_path, 'subject_info.mat'), 'subject_info');
 
 set(handles.pushbutton_preprocess, 'Enable', 'on')
 
@@ -308,6 +310,9 @@ function popupmenu_selector_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_selector contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupmenu_selector
 
+cells = strsplit(hObject.String{hObject.Value}, ',');
+parietal_mm = [str2double(cells{2}), str2double(cells{3}), str2double(cells{4})];
+plot_parietal(handles, parietal_mm, hObject.Value)
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu_selector_CreateFcn(hObject, eventdata, handles)
@@ -421,3 +426,31 @@ function pushbutton_analysis_fc_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 reset_parietal(handles)
 redraw_parietal(handles)
+
+
+% --- Executes on button press in pushbutton_emperical.
+function pushbutton_emperical_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_emperical (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+global gvar
+
+strings = get(handles.popupmenu_selector, 'String');
+for j = 1 : length(strings)
+    if strfind(strings{j}, sprintf('%d, %d, %d', gvar.parietal_mm_emperical))
+        set(handles.popupmenu_selector, 'Value', j)
+        plot_parietal(handles, gvar.parietal_mm_emperical, j)
+        break
+    end
+end
+
+
+% --- Executes during object deletion, before destroying properties.
+function figure1_DeleteFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+clear all
+disp('Bye Bye.')
