@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 20-Jun-2019 16:36:46
+% Last Modified by GUIDE v2.5 20-Jun-2019 17:04:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,6 +64,8 @@ guidata(hObject, handles);
 reset_preprocess(handles)
 reset_hippocampus(handles)
 reset_parietal(handles)
+
+parse_history_subjects(handles)
 
 
 % --- Outputs from this function are returned to the command line.
@@ -115,7 +117,8 @@ console_report(handles, repmat('#', 1, 80))
 console_report(handles, sprintf('    %s', datetime))
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
 
-save(fullfile(gvar.subject_id_path, 'subject_info.mat'), 'subject_info');
+gvar_saved = gvar;
+save(fullfile(gvar.subject_id_path, 'gvar_saved.mat'), 'gvar_saved');
 
 set(handles.pushbutton_preprocess, 'Enable', 'on')
 
@@ -454,3 +457,58 @@ function figure1_DeleteFcn(hObject, eventdata, handles)
 
 clear all
 disp('Bye Bye.')
+
+
+% --- Executes on selection change in popupmenu_subject_selector.
+function popupmenu_subject_selector_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_subject_selector (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_subject_selector contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_subject_selector
+
+reset_preprocess(handles)
+reset_hippocampus(handles)
+reset_parietal(handles)
+
+global gvar
+
+idx = get(hObject, 'Value');
+
+h = gvar.history_gvars;
+
+gvar = gvar.history_gvars{idx};
+gvar.history_gvars = h;
+
+subject_info = gvar.subject_info_;
+string = {
+    sprintf('PatientName:       %s', subject_info.PatientName);
+    sprintf('PatientSex:        %s', subject_info.PatientSex);
+    sprintf('PatientAge:        %s', subject_info.PatientAge);
+    sprintf('AcquisitionDate:   %s', subject_info.AcquisitionDate);
+    sprintf('AcquisitionTime:   %s', subject_info.AcquisitionTime);
+    sprintf('SeriesDescription: %s', subject_info.SeriesDescription);
+    };
+handles.text_subject_info.String = string;
+
+console_report(handles, '', 'clear')
+console_report(handles, repmat('#', 1, 80))
+console_report(handles, sprintf('    %s', datetime))
+console_report(handles, sprintf('New session: %s', subject_info.inner_id))
+
+set(handles.pushbutton_preprocess, 'Enable', 'on')
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_subject_selector_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_subject_selector (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
