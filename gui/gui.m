@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 20-Jun-2019 17:04:27
+% Last Modified by GUIDE v2.5 20-Jun-2019 21:27:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,9 @@ reset_preprocess(handles)
 reset_hippocampus(handles)
 reset_parietal(handles)
 
+global gvar
+gvar = varargin{1};
+
 parse_history_subjects(handles)
 
 
@@ -85,11 +88,23 @@ function pushbutton_loadnewsubject_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+console_report(handles, '', 'clear')
+console_report(handles, repmat('#', 1, 80))
+console_report(handles, sprintf('    %s', datetime))
+
 reset_preprocess(handles)
 reset_hippocampus(handles)
 reset_parietal(handles)
+set(handles.popupmenu_subject_selector, 'Enable', 'off')
 
-[dir_path, subject_info] = gui_select_folder;
+try
+    [dir_path, subject_info] = gui_select_folder;
+catch
+    parse_history_subjects(handles)
+    set(handles.popupmenu_subject_selector, 'Enable', 'on')
+    set(handles.pushbutton_preprocess, 'Enable', 'on')
+    return
+end
 
 string = {
     sprintf('PatientName:       %s', subject_info.PatientName);
@@ -104,6 +119,8 @@ handles.text_subject_info.String = string;
 global gvar
 gvar.subject_info_ = subject_info;
 
+console_report(handles, sprintf('New session: %s', subject_info.inner_id))
+
 % global inner_id
 % inner_id = subject_info.inner_id;
 
@@ -112,14 +129,11 @@ gvar.subject_rawfile_path = dir_path;
 gvar.subject_id_path = fullfile(gvar.runtime_path, 'subjects', subject_info.inner_id);
 [a, b, c] = mkdir(gvar.subject_id_path);
 
-console_report(handles, '', 'clear')
-console_report(handles, repmat('#', 1, 80))
-console_report(handles, sprintf('    %s', datetime))
-console_report(handles, sprintf('New session: %s', subject_info.inner_id))
-
 gvar_saved = gvar;
 save(fullfile(gvar.subject_id_path, 'gvar_saved.mat'), 'gvar_saved');
 
+parse_history_subjects(handles)
+set(handles.popupmenu_subject_selector, 'Enable', 'on')
 set(handles.pushbutton_preprocess, 'Enable', 'on')
 
 
@@ -129,6 +143,7 @@ function pushbutton_preprocess_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+reset_preprocess(handles)
 reset_hippocampus(handles)
 reset_parietal(handles)
 
@@ -140,6 +155,8 @@ console_report(handles, sprintf('Working path: %s', gvar.subject_id_path));
 console_report(handles, 'DICOM import ...');
 fun_preprocess_1
 console_report(handles, 'DICOM import done');
+
+parse_history_subjects(handles)
 
 console_report(handles, 'Realign ...');
 fun_preprocess_2
@@ -160,6 +177,7 @@ report_artificial(handles)
 
 load_data_for_analysis(handles)
 
+set(handles.pushbutton_preprocess, 'Enable', 'on')
 set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
 
 
@@ -416,9 +434,9 @@ function text7_ButtonDownFcn(hObject, eventdata, handles)
 if strcmp(get(handles.edit_bandpass_low, 'Enable'), 'on')
     global gvar
     fs = 1000 / gvar.subject_info_.RepetitionTime;
-    f = gcf;
+    % f = gcf;
     figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
-    figure(f);
+    % figure(f);
 end
 
 
@@ -475,6 +493,10 @@ reset_parietal(handles)
 global gvar
 
 idx = get(hObject, 'Value');
+s = get(hObject, 'String');
+if strcmp(s{1}, '--')
+    return
+end
 
 h = gvar.history_gvars;
 
@@ -511,4 +533,3 @@ function popupmenu_subject_selector_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
