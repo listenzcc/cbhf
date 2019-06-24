@@ -1,7 +1,11 @@
 function [dir_path, subject_info] = gui_select_folder
 global gvar
 
+dir_path = '';
+
 lastdirmat = fullfile(gvar.runtime_path, 'dotfiles', 'lastdir.mat');
+[a, b, c] = mkdir(gvar.runtime_path, 'dotfiles');
+
 if exist(lastdirmat, 'file')
     load(lastdirmat, 'dir_path')
 end

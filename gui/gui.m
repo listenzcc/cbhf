@@ -95,6 +95,7 @@ console_report(handles, sprintf('    %s', datetime))
 reset_preprocess(handles)
 reset_hippocampus(handles)
 reset_parietal(handles)
+set(handles.text_subject_info, 'String', '[Subject information]')
 set(handles.popupmenu_subject_selector, 'Enable', 'off')
 
 try
@@ -116,7 +117,13 @@ string = {
     };
 handles.text_subject_info.String = string;
 
+clear gvar
 global gvar
+
+gvar = struct;
+gvar.runtime_path = fullfile(fileparts(which('start_TMSHF')));
+gvar.resources_path = fullfile(gvar.runtime_path, 'resources');
+
 gvar.subject_info_ = subject_info;
 
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
@@ -494,7 +501,7 @@ global gvar
 
 idx = get(hObject, 'Value');
 s = get(hObject, 'String');
-if strcmp(s{1}, '--')
+if strcmp(s{idx}, '--')
     return
 end
 

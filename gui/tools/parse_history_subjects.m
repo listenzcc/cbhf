@@ -38,11 +38,9 @@ for d = dirs'
     end
 end
 
-if isempty(history_names)
-    return
-end
-
-set(handles.popupmenu_subject_selector ,'String', history_names);
+history_names{length(history_names)+1, 1} = '--';
+set(handles.popupmenu_subject_selector, 'String', history_names);
+set(handles.popupmenu_subject_selector, 'Value', length(history_names));
 
 gvar.history_gvars = history_gvars;
 

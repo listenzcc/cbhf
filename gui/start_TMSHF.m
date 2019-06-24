@@ -2,7 +2,6 @@ clear all
 % clc
 
 gvar = struct;
-
 gvar.runtime_path = fullfile(fileparts(which('start_TMSHF')));
 gvar.resources_path = fullfile(gvar.runtime_path, 'resources');
 
