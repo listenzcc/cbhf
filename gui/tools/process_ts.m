@@ -19,6 +19,7 @@ end
 
 % Band pass filter
 fs = 1000 / gvar.subject_info_.RepetitionTime;
+fs = 0.5;
 befor_bandpass_ts = ts;
 ts = bandpass(ts, gvar.bandpass_filter, fs);
 

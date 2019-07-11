@@ -70,9 +70,9 @@ zmm = max_mm(3);
 gvar.corr_map_parietal_T1 = corr_map_parietal_T1;
 
 %% Report and save data
-set(handles.text_coor_x, 'String', sprintf('%.2f', xmm))
-set(handles.text_coor_y, 'String', sprintf('%.2f', ymm))
-set(handles.text_coor_z, 'String', sprintf('%.2f', zmm))
+% set(handles.text_coor_x, 'String', sprintf('%.2f', xmm))
+% set(handles.text_coor_y, 'String', sprintf('%.2f', ymm))
+% set(handles.text_coor_z, 'String', sprintf('%.2f', zmm))
 console_report(handles,...
     sprintf('TMS point in Parietal: %.2f, %.2f, %.2f', xmm, ymm, zmm))
 gvar.parietal_mm = [xmm, ymm, zmm];

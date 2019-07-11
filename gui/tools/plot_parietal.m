@@ -7,6 +7,9 @@ if nargin < 2 || isempty(parietal_mm)
     parietal_mm = gvar.parietal_mm;
 else
     is_redraw = true;
+    set(handles.text_coor_x, 'String', sprintf('%.2f', parietal_mm(1)))
+    set(handles.text_coor_y, 'String', sprintf('%.2f', parietal_mm(2)))
+    set(handles.text_coor_z, 'String', sprintf('%.2f', parietal_mm(3)))
 end
 
 %% T1 image
@@ -67,6 +70,10 @@ else
     [a, b] = sort(cp_box(:, 1), 'descend');
     cp_box = cp_box(b, :);
     
+    set(handles.text_coor_x, 'String', sprintf('%.2f', cp_box(1, 2)))
+    set(handles.text_coor_y, 'String', sprintf('%.2f', cp_box(1, 3)))
+    set(handles.text_coor_z, 'String', sprintf('%.2f', cp_box(1, 4)))
+    
     string = cell(len, 1);
     for j = 1 : len
         string{j} = sprintf('%.4f, %d, %d, %d', cp_box(j, :));
@@ -96,25 +103,10 @@ position_parietal_fun = fun_mm2position(parietal_mm, gvar.vol_4D.mat);
 % Calculate time series
 ts_parietal = gvar.img_4D(position_parietal_fun(1), position_parietal_fun(2), position_parietal_fun(3), :);
 ts_parietal = spm_detrend(squeeze(ts_parietal), 1);
-
-% Remove head motion
-if gvar.remove_head_motion == 1
-    hm = gvar.head_motion;
-    for s = hm
-        ts_parietal = fun_regout(ts_parietal, s);
-    end
-end
-
-% Remove global
-if gvar.remove_head_motion == 1
-    ts_global = mean(mean(mean(gvar.img_4D)));
-    ts_global = spm_detrend(squeeze(ts_global), 1);
-    ts_parietal = fun_regout(ts_parietal, ts_global);
-end
-
-% Band pass filter
-fs = 1000 / gvar.subject_info_.RepetitionTime;
-ts_parietal = bandpass(ts_parietal, gvar.bandpass_filter, fs);
+ts_global = mean(mean(mean(gvar.img_4D)));
+ts_global = spm_detrend(squeeze(ts_global), 1);
+ts_hm = gvar.head_motion;
+[x1, x2, ts_parietal] = process_ts(ts_parietal, ts_hm, ts_global);
 
 % Plot time series
 set(gcf, 'CurrentAxes', handles.axes_parietal_ts)

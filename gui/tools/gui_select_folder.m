@@ -1,4 +1,4 @@
-function [dir_path, subject_info] = gui_select_folder
+function [dir_path, subject_info, string] = gui_select_folder
 global gvar
 
 dir_path = '';
@@ -18,7 +18,7 @@ end
 
 fnames = dir(dir_path);
 fpath = fullfile(dir_path, fnames(3).name);
-subject_info = get_subject_info(fpath);
+[subject_info, string] = get_subject_info(fpath);
 
 save(lastdirmat, 'dir_path')
 
