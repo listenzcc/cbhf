@@ -92,29 +92,20 @@ console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
 console_report(handles, sprintf('    %s', datetime))
 
-reset_preprocess(handles)
-reset_hippocampus(handles)
-reset_parietal(handles)
-set(handles.text_subject_info, 'String', '[Subject information]')
-set(handles.popupmenu_subject_selector, 'Enable', 'off')
-
 try
-    [dir_path, subject_info] = gui_select_folder;
+    set(handles.popupmenu_subject_selector, 'Enable', 'off')
+    [dir_path, subject_info, string] = gui_select_folder;
+    reset_preprocess(handles)
+    reset_hippocampus(handles)
+    reset_parietal(handles)
+    set(handles.text_subject_info, 'String', '[Subject information]')
 catch
     parse_history_subjects(handles)
     set(handles.popupmenu_subject_selector, 'Enable', 'on')
-    set(handles.pushbutton_preprocess, 'Enable', 'on')
+    print('something is wrong')
     return
 end
 
-string = {
-    sprintf('PatientName:       %s', subject_info.PatientName);
-    sprintf('PatientSex:        %s', subject_info.PatientSex);
-    sprintf('PatientAge:        %s', subject_info.PatientAge);
-    sprintf('AcquisitionDate:   %s', subject_info.AcquisitionDate);
-    sprintf('AcquisitionTime:   %s', subject_info.AcquisitionTime);
-    sprintf('SeriesDescription: %s', subject_info.SeriesDescription);
-    };
 handles.text_subject_info.String = string;
 
 clear gvar
