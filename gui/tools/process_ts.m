@@ -18,8 +18,7 @@ if gvar.remove_head_motion == 1
 end
 
 % Band pass filter
-fs = 1000 / gvar.subject_info_.RepetitionTime;
-fs = 0.5;
+fs = 1 / gvar.tr;
 befor_bandpass_ts = ts;
 ts = bandpass(ts, gvar.bandpass_filter, fs);
 

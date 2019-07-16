@@ -49,7 +49,8 @@ console_report(handles, 'Reading images ...')
 vols = spm_vol(paths);
 vol_4D = vols{1};
 dvols = cell2mat(vols);
-dvols = dvols(11:end); % Remove first 10 TR to pervent artificial
+
+dvols = dvols(fix(gvar.crop_from/gvar.tr):fix(gvar.crop_to/gvar.tr)); % Remove first 10 TR to pervent artificial
 img_4D = spm_read_vols(dvols);
 console_report(handles, 'Reading images done')
 

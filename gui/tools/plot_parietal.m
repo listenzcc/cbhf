@@ -110,10 +110,15 @@ ts_hm = gvar.head_motion;
 
 % Plot time series
 set(gcf, 'CurrentAxes', handles.axes_parietal_ts)
-lines = plot([gvar.ts_hippo, ts_parietal]);
+
+timeline = gvar.timeline(fix(gvar.crop_from/gvar.tr):fix(gvar.crop_to/gvar.tr));
+
+lines = plot(timeline, [gvar.ts_hippo, ts_parietal]);
 set(lines, 'LineWidth', 2)
 legend(lines, {'Hippocampus', 'Parietal'}, 'Location', 'best')
-set(gca, 'XTick', [])
+
+xlim([min(gvar.timeline), max(gvar.timeline)])
+set(gca, 'XTick', [0 : 60 : max(gvar.timeline)])
 set(gca, 'YTick', [])
 set(gca, 'Box', 'off')
 

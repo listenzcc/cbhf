@@ -39,12 +39,17 @@ gvar.ts_hippo = final_ts;
 
 % Plot time series
 set(gcf, 'CurrentAxes', handles.axes_hippo_ts)
-lines = plot([raw_ts_hippo, gvar.ts_hippo]);
+
+timeline = gvar.timeline(fix(gvar.crop_from/gvar.tr):fix(gvar.crop_to/gvar.tr));
+
+lines = plot(timeline, [raw_ts_hippo, gvar.ts_hippo]);
 set(lines(2), 'LineWidth', 2)
 set(lines(2), 'Color', 'Black')
 set(lines(1), 'Color', 0.5 + zeros(1, 3))
 legend(lines, {'Raw', 'Process'}, 'Location', 'best')
-set(gca, 'XTick', [])
+
+xlim([min(gvar.timeline), max(gvar.timeline)])
+set(gca, 'XTick', [0 : 60 : max(gvar.timeline)])
 set(gca, 'YTick', [])
 set(gca, 'Box', 'off')
 

@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 20-Jun-2019 21:27:22
+% Last Modified by GUIDE v2.5 16-Jul-2019 15:29:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,6 +107,7 @@ catch
 end
 
 handles.text_subject_info.String = string;
+handles.edit_TRms.String = sprintf('%.0f', 2000); % subject_info.RepetitionTime);
 
 clear gvar
 global gvar
@@ -511,6 +512,7 @@ string = {
     sprintf('SeriesDescription: %s', subject_info.SeriesDescription);
     };
 handles.text_subject_info.String = string;
+handles.edit_TRms.String = sprintf('%.0f', 2000);  % subject_info.RepetitionTime);
 
 console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
@@ -527,6 +529,118 @@ function popupmenu_subject_selector_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_TRms_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_TRms (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_TRms as text
+%        str2double(get(hObject,'String')) returns contents of edit_TRms as a double
+if isnan(str2double(get(hObject, 'String')))
+    warndlg(sprintf('"%s" is not a legal TR, using "2000" as default',...
+        get(hObject, 'String')))
+    set(hObject, 'String', '2000')
+end
+console_report(handles, sprintf('TR is set to %s ms', get(hObject, 'String')))
+reset_preprocess(handles)
+reset_hippocampus(handles)
+reset_parietal(handles)
+set(handles.pushbutton_preprocess, 'Enable', 'on')
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_TRms_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_TRms (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_crop_from_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_crop_from (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_crop_from as text
+%        str2double(get(hObject,'String')) returns contents of edit_crop_from as a double
+global gvar
+
+from = str2double(get(handles.edit_crop_from, 'String'));
+to = str2double(get(handles.edit_crop_to, 'String'));
+
+if isnan(from+to) || (to-from) < 20 || from < gvar.crop_from_limit || to > gvar.crop_to_limit
+    disp('Wrong cropping parameters, using default.')
+    
+    set(handles.edit_crop_from, 'String', sprintf('%.0f', gvar.crop_from_limit))
+    set(handles.edit_crop_to, 'String', sprintf('%.0f', gvar.crop_to_limit))
+end
+
+reset_hippocampus(handles)
+reset_parietal(handles)
+plot_artificial(handles)
+load_data_for_analysis(handles)
+set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_crop_from_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_crop_from (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function edit_crop_to_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_crop_to (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_crop_to as text
+%        str2double(get(hObject,'String')) returns contents of edit_crop_to as a double
+global gvar
+
+from = str2double(get(handles.edit_crop_from, 'String'));
+to = str2double(get(handles.edit_crop_to, 'String'));
+
+if isnan(from+to) || (to-from) < 20 || from < gvar.crop_from_limit || to > gvar.crop_to_limit
+    disp('Wrong cropping parameters, using default.')
+    
+    set(handles.edit_crop_from, 'String', sprintf('%.0f', gvar.crop_from_limit))
+    set(handles.edit_crop_to, 'String', sprintf('%.0f', gvar.crop_to_limit))
+end
+
+reset_hippocampus(handles)
+reset_parietal(handles)
+plot_artificial(handles)
+load_data_for_analysis(handles)
+set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_crop_to_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_crop_to (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

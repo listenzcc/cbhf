@@ -1,4 +1,4 @@
-function report_artificial(handles)
+function plot_artificial(handles)
 
 global gvar
 
@@ -11,12 +11,6 @@ hm = load(fullfile(d(1).folder, d(1).name));
 len = size(hm, 1);
 tr = str2double(get(handles.edit_TRms, 'String'))/1000;
 xtick = [1:len] * tr;
-
-set(handles.edit_crop_from, 'String', '20')
-set(handles.edit_crop_to, 'String', sprintf('%.0f', len * tr))
-
-set(handles.edit_crop_from, 'Enable', 'on')
-set(handles.edit_crop_to, 'Enable', 'on')
 
 % Plot head motion
 from = str2double(get(handles.edit_crop_from, 'String'));
@@ -47,12 +41,8 @@ set(gca, 'Box', 'off')
 set(gca, 'XTick', [0 : 60 : max(xtick)])
 
 gvar.head_motion = hm(fix(from/tr):fix(to/tr), :);
-gvar.timeline = xtick;
-gvar.tr = tr;
 gvar.crop_from = from;
-gvar.crop_from_limit = from;
 gvar.crop_to = to;
-gvar.crop_to_limit = to;
 
 % Report console
 max_hm = max(abs(gvar.head_motion));
