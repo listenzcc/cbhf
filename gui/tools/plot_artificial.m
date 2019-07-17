@@ -8,6 +8,9 @@ this_preprocessed_path = fullfile(gvar.subject_id_path, '_____preprocessed_4');
 % Read head motion
 d = dir(fullfile(this_preprocessed_path, 'rp_*.txt'));
 hm = load(fullfile(d(1).folder, d(1).name));
+for j = 1 : 6
+    hm(:, j) = hm(:, j) - mean(hm(:, j));
+end
 len = size(hm, 1);
 tr = str2double(get(handles.edit_TRms, 'String'))/1000;
 xtick = [1:len] * tr;

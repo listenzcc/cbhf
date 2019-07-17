@@ -94,6 +94,7 @@ console_report(handles, sprintf('    %s', datetime))
 
 try
     set(handles.popupmenu_subject_selector, 'Enable', 'off')
+    set(handles.edit_TRms, 'Enable', 'off')
     [dir_path, subject_info, string] = gui_select_folder;
     reset_preprocess(handles)
     reset_hippocampus(handles)
@@ -133,6 +134,7 @@ save(fullfile(gvar.subject_id_path, 'gvar_saved.mat'), 'gvar_saved');
 
 parse_history_subjects(handles)
 set(handles.popupmenu_subject_selector, 'Enable', 'on')
+set(handles.edit_TRms, 'Enable', 'on')
 set(handles.pushbutton_preprocess, 'Enable', 'on')
 
 
@@ -520,6 +522,7 @@ console_report(handles, sprintf('    %s', datetime))
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
 
 set(handles.pushbutton_preprocess, 'Enable', 'on')
+set(handles.edit_TRms, 'Enable', 'on')
 
 
 % --- Executes during object creation, after setting all properties.
