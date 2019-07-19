@@ -21,7 +21,11 @@ end
 fs = 1 / gvar.tr;
 befor_bandpass_ts = ts;
 try
-    ts = bandpass(ts, gvar.bandpass_filter, fs);
+    new_ts = bandpass(ts, gvar.bandpass_filter, fs);
+    if size(new_ts, 2) == 1
+        new_ts = new_ts / std(new_ts) * std(ts);
+    end
+    ts = new_ts;
 catch
     disp('No bandpass function found, consider using a newer matlab')
     disp('Using fft for bandpass.')

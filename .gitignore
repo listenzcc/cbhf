@@ -4,3 +4,5 @@ reference
 gui/subjects
 gui/dotfiles
 spm12
+gui_test
+*.zip
