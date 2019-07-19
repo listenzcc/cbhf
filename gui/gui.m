@@ -90,7 +90,10 @@ function pushbutton_loadnewsubject_Callback(hObject, eventdata, handles)
 
 console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
-console_report(handles, sprintf('    %s', datetime))
+try
+    console_report(handles, sprintf('    %s', datetime))
+catch
+end
 
 try
     set(handles.popupmenu_subject_selector, 'Enable', 'off')
@@ -436,7 +439,13 @@ if strcmp(get(handles.edit_bandpass_low, 'Enable'), 'on')
     global gvar
     fs = 1000 / gvar.subject_info_.RepetitionTime;
     % f = gcf;
-    figure, bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
+    f = figure;
+    try
+        bandpass(gvar.ts_hippo_before_bp, gvar.bandpass_filter, fs);
+    catch
+        disp('No bandpass function found, consider using a newer matlab')
+        close(f)
+    end
     % figure(f);
 end
 
@@ -518,7 +527,10 @@ handles.edit_TRms.String = sprintf('%.0f', 2000);  % subject_info.RepetitionTime
 
 console_report(handles, '', 'clear')
 console_report(handles, repmat('#', 1, 80))
-console_report(handles, sprintf('    %s', datetime))
+try
+    console_report(handles, sprintf('    %s', datetime))
+catch
+end
 console_report(handles, sprintf('New session: %s', subject_info.inner_id))
 
 set(handles.pushbutton_preprocess, 'Enable', 'on')

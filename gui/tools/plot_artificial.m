@@ -7,7 +7,7 @@ this_preprocessed_path = fullfile(gvar.subject_id_path, '_____preprocessed_4');
 
 % Read head motion
 d = dir(fullfile(this_preprocessed_path, 'rp_*.txt'));
-hm = load(fullfile(d(1).folder, d(1).name));
+hm = load(fullfile(this_preprocessed_path, d(1).name));
 for j = 1 : 6
     hm(:, j) = hm(:, j) - mean(hm(:, j));
 end
@@ -28,6 +28,8 @@ hold on
 plot(xtick(fix(from/tr):fix(to/tr)), hm(fix(from/tr):fix(to/tr), 1:3));
 hold off
 xlim([min(xtick), max(xtick)])
+tmp = hm(10:end, 1:3);
+ylim([min(tmp(:)), max(tmp(:))] * 1.1)
 set(gca, 'Box', 'off')
 set(gca, 'XTick', [0 : 60 : max(xtick)])
 
@@ -40,6 +42,8 @@ hold on
 plot(xtick(fix(from/tr):fix(to/tr)), hm(fix(from/tr):fix(to/tr), 4:6));
 hold off
 xlim([min(xtick), max(xtick)])
+tmp = hm(10:end, 4:6);
+ylim([min(tmp(:)), max(tmp(:))] * 1.1)
 set(gca, 'Box', 'off')
 set(gca, 'XTick', [0 : 60 : max(xtick)])
 

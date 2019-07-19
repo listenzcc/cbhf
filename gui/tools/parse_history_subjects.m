@@ -1,8 +1,8 @@
 function parse_history_subjects(handles)
 
 global gvar
-
-dirs = dir(fullfile(gvar.runtime_path, 'subjects'));
+tmproot = fullfile(gvar.runtime_path, 'subjects');
+dirs = dir(tmproot);
 dirs(1:2) = '';
 
 if isempty(dirs)
@@ -15,7 +15,7 @@ history_names = {};
 history_gvars = {};
 
 for d = dirs'
-    subject_id_path = fullfile(d.folder, d.name);
+    subject_id_path = fullfile(tmproot, d.name);
     if ~exist(fullfile(subject_id_path, 'gvar_saved.mat'), 'file')
         continue
     end

@@ -20,8 +20,27 @@ end
 % Band pass filter
 fs = 1 / gvar.tr;
 befor_bandpass_ts = ts;
-ts = bandpass(ts, gvar.bandpass_filter, fs);
+try
+    ts = bandpass(ts, gvar.bandpass_filter, fs);
+catch
+    disp('No bandpass function found, consider using a newer matlab')
+    disp('Using fft for bandpass.')
+    ts = fft_bandpass(ts, gvar.bandpass_filter, fs);
+end
 
 final_ts = ts;
+
+end
+
+function new_ts = fft_bandpass(ts, bdf, fs)
+
+freqs = linspace(0, fs, length(ts));
+freqs(freqs<bdf(1)) = 0;
+freqs(freqs>bdf(2)) = 0;
+freqs = freqs + freqs(end:-1:1);
+
+f = fft(ts);
+f(freqs==0) = 0;
+new_ts = real(ifft(f));
 
 end
