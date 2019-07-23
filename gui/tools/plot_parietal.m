@@ -82,10 +82,22 @@ else
     
     set(gcf, 'CurrentAxes', handles.axes_parietal_hist)
     bar(cp_box(:, 1))
+    
     hold on
+    % draw green circle as emperical node
+    strings = get(handles.popupmenu_selector, 'String');
+    for j = 1 : length(strings)
+        if strfind(strings{j}, sprintf('%d, %d, %d', gvar.parietal_mm_emperical))
+            plot(j, cp_box(j, 1), 'go');
+            break
+        end
+    end
+    
+    % draw red circle as current node
     x = 1;
     red_circle = plot(x, cp_box(x, 1), 'ro');
     hold off
+    
     xlim([-0.05*len, 1.05*len])
     set(gca, 'XTick', [])
     set(gca, 'YTick', [])

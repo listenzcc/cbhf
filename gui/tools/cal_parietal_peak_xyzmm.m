@@ -49,18 +49,21 @@ end
 [detrend_ts, befor_bandpass_ts, final_ts] = process_ts(ts_mat, ts_hm, ts_global);
 corr_map = fun_corr(final_ts, gvar.ts_hippo);
 
+p_selector_mat = p_T1_mat;
+vol_selector_mat = gvar.vol_T1.mat;
+
 max_c = 0;
-for j = 1 : size(p_T1_mat, 2)
+for j = 1 : size(p_selector_mat, 2)
     c = abs(corr_map(j));
     if c > max_c
         max_c = c;
-        max_mm = fun_position2mm(p_T1_mat(:, j), gvar.vol_T1.mat);
+        max_mm = fun_position2mm(p_selector_mat(:, j), vol_selector_mat);
     end
-    if isnan(corr_map_parietal_T1(p_T1_mat(1, j), p_T1_mat(2, j), p_T1_mat(3, j)))
-        corr_map_parietal_T1(p_T1_mat(1, j), p_T1_mat(2, j), p_T1_mat(3, j)) = c;
+    if isnan(corr_map_parietal_T1(p_selector_mat(1, j), p_selector_mat(2, j), p_selector_mat(3, j)))
+        corr_map_parietal_T1(p_selector_mat(1, j), p_selector_mat(2, j), p_selector_mat(3, j)) = c;
     end
-    if corr_map_parietal_T1(p_T1_mat(1, j), p_T1_mat(2, j), p_T1_mat(3, j)) < c
-        corr_map_parietal_T1(p_T1_mat(1, j), p_T1_mat(2, j), p_T1_mat(3, j)) = c;
+    if corr_map_parietal_T1(p_selector_mat(1, j), p_selector_mat(2, j), p_selector_mat(3, j)) < c
+        corr_map_parietal_T1(p_selector_mat(1, j), p_selector_mat(2, j), p_selector_mat(3, j)) = c;
     end
 end
 xmm = max_mm(1);

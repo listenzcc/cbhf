@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 16-Jul-2019 15:29:05
+% Last Modified by GUIDE v2.5 23-Jul-2019 15:58:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -660,3 +660,35 @@ function edit_crop_to_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton_next_large.
+function pushbutton_next_large_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_next_large (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gvar
+
+j = get(handles.popupmenu_selector, 'Value');
+
+if (j+1) <= length(handles.popupmenu_selector.String)
+    set(handles.popupmenu_selector, 'Value', j+1);
+    cells = strsplit(handles.popupmenu_selector.String{j+1}, ',');
+    parietal_mm = [str2double(cells{2}), str2double(cells{3}), str2double(cells{4})];
+    plot_parietal(handles, parietal_mm, j+1)
+end
+
+
+
+% --- Executes on button press in pushbutton_back_largest.
+function pushbutton_back_largest_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_back_largest (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gvar
+
+set(handles.popupmenu_selector, 'Value', 1);
+cells = strsplit(handles.popupmenu_selector.String{1}, ',');
+parietal_mm = [str2double(cells{2}), str2double(cells{3}), str2double(cells{4})];
+plot_parietal(handles, parietal_mm, 1)
+

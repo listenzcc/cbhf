@@ -16,5 +16,7 @@ console_report(handles, 'Redraw parietal done')
 set(handles.pushbutton_analysis_fc, 'Enable', 'on')
 set(handles.popupmenu_selector, 'Enable', 'on')
 set(handles.pushbutton_emperical, 'Enable', 'on')
+set(handles.pushbutton_next_large, 'Enable', 'on')
+set(handles.pushbutton_back_largest, 'Enable', 'on')
 
 end
