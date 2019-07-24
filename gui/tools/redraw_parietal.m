@@ -18,5 +18,6 @@ set(handles.popupmenu_selector, 'Enable', 'on')
 set(handles.pushbutton_emperical, 'Enable', 'on')
 set(handles.pushbutton_next_large, 'Enable', 'on')
 set(handles.pushbutton_back_largest, 'Enable', 'on')
+set(handles.pushbutton_3D, 'Enable', 'on')
 
 end

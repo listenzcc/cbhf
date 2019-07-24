@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 23-Jul-2019 15:58:24
+% Last Modified by GUIDE v2.5 23-Jul-2019 16:41:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -691,4 +691,36 @@ set(handles.popupmenu_selector, 'Value', 1);
 cells = strsplit(handles.popupmenu_selector.String{1}, ',');
 parietal_mm = [str2double(cells{2}), str2double(cells{3}), str2double(cells{4})];
 plot_parietal(handles, parietal_mm, 1)
+
+
+
+% --- Executes on button press in pushbutton_3D.
+function pushbutton_3D_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_3D (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gvar
+
+gvar
+
+fpath = fullfile(gvar.resources_path, 'SurfTemplate', 'BrainMesh_ICBM152_smoothed.nv');
+
+mms = [
+    str2double(get(handles.edit_coor_x, 'String'));...
+    str2double(get(handles.edit_coor_y, 'String'));...
+    str2double(get(handles.edit_coor_z, 'String'))];
+
+for j = 1 : get(handles.popupmenu_selector, 'Value')
+    cells = strsplit(handles.popupmenu_selector.String{j}, ',');
+    mm_p = [str2double(cells{2}); str2double(cells{3}); str2double(cells{4})];
+    mms = [mms, mm_p];
+end
+% mms =[mms,[
+%     str2double(get(handles.text_coor_x, 'String'));...
+%     str2double(get(handles.text_coor_y, 'String'));...
+%     str2double(get(handles.text_coor_z, 'String'))]];
+
+fun_plot_3D_surface(fpath, mms)
+
+
 

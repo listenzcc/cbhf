@@ -23,6 +23,7 @@ set(handles.popupmenu_selector, 'String', {'0.xxxx, xx, xx, xx'})
 set(handles.pushbutton_emperical, 'Enable', 'off')
 set(handles.pushbutton_next_large, 'Enable', 'off')
 set(handles.pushbutton_back_largest, 'Enable', 'off')
+set(handles.pushbutton_3D, 'Enable', 'off')
 
 end
 
