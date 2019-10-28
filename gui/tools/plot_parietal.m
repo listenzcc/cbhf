@@ -74,8 +74,8 @@ else
     set(handles.text_coor_y, 'String', sprintf('%.2f', cp_box(1, 3)))
     set(handles.text_coor_z, 'String', sprintf('%.2f', cp_box(1, 4)))
     
-    string = cell(len, 1);
-    for j = 1 : len
+    string = cell(len+1, 1);
+    for j = 1 : len+1
         string{j} = sprintf('%.4f, %d, %d, %d', cp_box(j, :));
     end
     set(handles.popupmenu_selector, 'String', string)

@@ -462,6 +462,11 @@ function pushbutton_analysis_fc_Callback(hObject, eventdata, handles)
 reset_parietal(handles)
 redraw_parietal(handles)
 
+set(handles.popupmenu_selector, 'Value', 1);
+cells = strsplit(handles.popupmenu_selector.String{1}, ',');
+parietal_mm = [str2double(cells{2}), str2double(cells{3}), str2double(cells{4})];
+plot_parietal(handles, parietal_mm, 1)
+
 
 % --- Executes on button press in pushbutton_emperical.
 function pushbutton_emperical_Callback(hObject, eventdata, handles)

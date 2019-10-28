@@ -20,6 +20,9 @@ ts_empirical = squeeze(gvar.img_4D(pp(1), pp(2), pp(3), :));
 
 [detrend_ts, befor_bandpass_ts, final_ts] = process_ts(ts_empirical, ts_hm, ts_global);
 gvar.corr_empirical = abs(fun_corr(final_ts, gvar.ts_hippo));
+if isnan(gvar.corr_empirical)
+    gvar.corr_empirical = 0;
+end
 
 
 %% Calculate FC
