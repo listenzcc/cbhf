@@ -14,6 +14,7 @@ plot_parietal(handles)
 console_report(handles, 'Redraw parietal done')
 
 set(handles.pushbutton_analysis_fc, 'Enable', 'on')
+set(handles.radiobutton_left_only, 'Enable', 'on')
 set(handles.popupmenu_selector, 'Enable', 'on')
 set(handles.pushbutton_emperical, 'Enable', 'on')
 set(handles.pushbutton_next_large, 'Enable', 'on')

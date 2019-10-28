@@ -20,6 +20,10 @@ set(handles.popupmenu_selector, 'Enable', 'off')
 set(handles.popupmenu_selector, 'Value', 1)
 set(handles.popupmenu_selector, 'String', {'0.xxxx, xx, xx, xx'})
 
+global gvar
+gvar.left_only = handles.radiobutton_left_only.Value;
+
+set(handles.radiobutton_left_only, 'Enable', 'off')
 set(handles.pushbutton_emperical, 'Enable', 'off')
 set(handles.pushbutton_next_large, 'Enable', 'off')
 set(handles.pushbutton_back_largest, 'Enable', 'off')

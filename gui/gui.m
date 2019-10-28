@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 23-Jul-2019 16:41:09
+% Last Modified by GUIDE v2.5 28-Oct-2019 16:10:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -723,4 +723,16 @@ end
 fun_plot_3D_surface(fpath, mms)
 
 
+
+% --- Executes on button press in radiobutton_left_only.
+function radiobutton_left_only_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_left_only (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_left_only
+reset_parietal(handles)
+global gvar
+gvar.left_only = handles.radiobutton_left_only.Value;
+redraw_parietal(handles)
 

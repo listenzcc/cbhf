@@ -29,6 +29,12 @@ p_T1_mat = [];
 for k = keys(gvar.mmgrid_parietal_mask)
     mm = fun_str2arr(k{1});
     
+    if gvar.left_only == 1
+        if mm(1) > 0
+            continue
+        end
+    end
+    
     p_T1 = fun_mm2position(mm, gvar.vol_T1.mat);
     if ~fun_check_inside(p_T1, gvar.vol_T1.dim)
         continue

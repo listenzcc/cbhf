@@ -125,7 +125,7 @@ set(gcf, 'CurrentAxes', handles.axes_parietal_ts)
 
 timeline = gvar.timeline(fix(gvar.crop_from/gvar.tr):fix(gvar.crop_to/gvar.tr));
 
-lines = plot(timeline, [gvar.ts_hippo, ts_parietal]);
+lines = plot(timeline, zscore([gvar.ts_hippo, ts_parietal]));
 set(lines, 'LineWidth', 2)
 legend(lines, {'Hippocampus', 'Parietal'}, 'Location', 'best')
 
