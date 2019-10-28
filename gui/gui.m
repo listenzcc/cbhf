@@ -178,11 +178,15 @@ console_report(handles, 'Preprocess done');
 console_report(handles, repmat('-', 1, 20))
 
 report_artificial(handles)
+set(handles.edit_crop_from, 'Enable', 'off')
+set(handles.edit_crop_to, 'Enable', 'off')
 
 load_data_for_analysis(handles)
 
 set(handles.pushbutton_preprocess, 'Enable', 'on')
 set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+set(handles.edit_crop_from, 'Enable', 'on')
+set(handles.edit_crop_to, 'Enable', 'on')
 
 
 % --- Executes on button press in pushbutton_redraw_hippo.
@@ -603,11 +607,15 @@ if isnan(from+to) || (to-from) < 20 || from < gvar.crop_from_limit || to > gvar.
     set(handles.edit_crop_to, 'String', sprintf('%.0f', gvar.crop_to_limit))
 end
 
+set(handles.edit_crop_from, 'Enable', 'off')
+set(handles.edit_crop_to, 'Enable', 'off')
 reset_hippocampus(handles)
 reset_parietal(handles)
 plot_artificial(handles)
 load_data_for_analysis(handles)
 set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+set(handles.edit_crop_from, 'Enable', 'on')
+set(handles.edit_crop_to, 'Enable', 'on')
 
 
 % --- Executes during object creation, after setting all properties.
@@ -642,11 +650,15 @@ if isnan(from+to) || (to-from) < 20 || from < gvar.crop_from_limit || to > gvar.
     set(handles.edit_crop_to, 'String', sprintf('%.0f', gvar.crop_to_limit))
 end
 
+set(handles.edit_crop_from, 'Enable', 'off')
+set(handles.edit_crop_to, 'Enable', 'off')
 reset_hippocampus(handles)
 reset_parietal(handles)
 plot_artificial(handles)
 load_data_for_analysis(handles)
 set(handles.pushbutton_redraw_hippo, 'Enable', 'on')
+set(handles.edit_crop_from, 'Enable', 'on')
+set(handles.edit_crop_to, 'Enable', 'on')
 
 
 % --- Executes during object creation, after setting all properties.
